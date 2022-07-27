@@ -1,5 +1,7 @@
 import easygui
 import time
+import math
+
 
 AOCDAY = "01"
 
@@ -11,13 +13,21 @@ def readFile(fileName):
         lines[i] = lines[i].rstrip()
     return lines
 
+
+
 def part1(lines):
     # Code the solution to part 1 here, returning the answer as a string
-    return("Part 1 answer.")
+    
+    
+
+    return(f"ANSWER HERE") 
 
 def part2(lines):
-    # Code the solution to part 1 here, returning the answer as a string
-    return("Part 2 not implemented yet.")
+    # Code the solution to part 2 here, returning the answer as a string
+    
+    
+
+    pass
 
 def main ():
     # Opens a dialog to select the input file
