@@ -1,7 +1,5 @@
 import easygui
 import time
-import math
-
 
 AOCDAY = "02"
 
@@ -13,54 +11,58 @@ def readFile(fileName):
         lines[i] = lines[i].rstrip()
     return lines
 
-
-
-
-
 def part1(lines):
     # Code the solution to part 1 here, returning the answer as a string
-    
-    memory=[]
-    programCounter = 0 
+
+    memory = []
+    programCounter = 0
+
     for number in lines[0].split(","):
         memory.append(int(number))
-
+    
     memory[1] = 12
     memory[2] = 2
 
     while memory[programCounter] != 99:
-       
+
         if memory[programCounter] == 1:
             memory[memory[programCounter+3]] = memory[memory[programCounter+1]] + memory[memory[programCounter+2]]
-            programCounter += 4
 
         elif memory[programCounter] == 2:
             memory[memory[programCounter+3]] = memory[memory[programCounter+1]] * memory[memory[programCounter+2]]
-            programCounter += 4
+            
+        else:
+            print("ERROR: UNKNOWN OPCODE")
+            break
 
-    return(f"The value at memory address 0 is {memory[0]}!") 
+        programCounter += 4
 
-def runComputer(memory, inputA, inputB):
-    programCounter = 0 
+    return f"The value at memory address 0 is {memory[0]}"
 
-    memory[1] = inputA
-    memory[2] = inputB
+def runComputer(memory, noun, verb):
+    programCounter = 0
+    
+    memory[1] = noun
+    memory[2] = verb
 
     while memory[programCounter] != 99:
-       
         if memory[programCounter] == 1:
             memory[memory[programCounter+3]] = memory[memory[programCounter+1]] + memory[memory[programCounter+2]]
-            programCounter += 4
 
         elif memory[programCounter] == 2:
             memory[memory[programCounter+3]] = memory[memory[programCounter+1]] * memory[memory[programCounter+2]]
-            programCounter += 4
+            
+        else:
+            print("ERROR: UNKNOWN OPCODE")
+            break
+
+        programCounter += 4
+
     return memory[0]
 
 def part2(lines):
-    # Code the solution to part 2 here, returning the answer as a string
-    
-    TARGET = 19690720 #all caps b/c it is a constant (convention)
+    # Code the solution to part 1 here, returning the answer as a string
+    TARGET = 19690720
 
     for i in range(100):
         for j in range(100):
