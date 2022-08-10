@@ -14,7 +14,7 @@ def readFile(fileName):
     return lines
 
 class Step:
-    def __init__(self, dir, dis):
+    def __init__(self,dir,dis):
         self.dir = dir
         self.dis = dis
 
@@ -22,75 +22,65 @@ def parseLines(lines):
     path1 = []
     path2 = []
     for pair in lines[0].split(","):
-        path1.append(Step(pair[0], int(pair[1:])))
-
+        path1.append(Step(pair[0],int(pair[1:])))
     for pair in lines[1].split(","):
-        path2.append(Step(pair[0], int(pair[1:])))
-
+        path2.append(Step(pair[0],int(pair[1:])))
     return path1, path2
 
-def manhattanDistance(point):
+def manhatthanDistance(cross):
+    x = abs(int(cross.split(",")[0]))
+    y = abs(int(cross.split(",")[1]))
+    return x + y
 
-    x = abs(int(point.split(",")[0]))
-    y = abs(int(point.split(",")[1]))
+DIRS = {"U":(0,1),"D":(0,-1),"L":(-1,0),"R":(1,0)}
 
-    return x+y
+def findSize(path1, path2):
+    x, y, maxX, maxY, minX, minY = 0, 0, 0, 0, 0, 0
+
+    for step in path1:
+        x += DIRS[step.dir][0] * step.dis
+        y += DIRS[step.dir][1] * step.dis
+        maxX = max(x, maxX)
+        maxY = max(y, maxY)
+        minX = min(x, minX)
+        minY = min(y, minY)
+    x,y = 0, 0
+    for step in path2:
+        x += DIRS[step.dir][0] * step.dis
+        y += DIRS[step.dir][1] * step.dis
+        maxX = max(x, maxX)
+        maxY = max(y, maxY)
+        minX = min(x, minX)
+        minY = min(y, minY)
+    size = max([maxX,maxY,abs(minX),abs(minY)])
+    return size
 
 def part1(lines):
-    # Code the solution to part 1 here, returning the answer as a string
-    
     path1, path2 = parseLines(lines)
+    size = findSize(path1, path2)
 
-    path1_points = []
-    x = 0
-    y = 0
+    grid = [[False for i in range(size*2+1)] for j in range(size*2+1)]
+
+    x = size
+    y = size
     for step in path1:
         for i in range(step.dis):
-
-            if step.dir == "U":
-                y += 1
-
-            elif step.dir == "D":
-                y -= 1
-
-            elif step.dir == "R":
-                x += 1
-
-            elif step.dir == "L":
-                x -= 1
-            
-            path1_points.append(f"{x},{y}")
-
-    print(path1_points)
-
-    crosspoints = []
-    path2_points = []
-    x = 0
-    y = 0
+            x += DIRS[step.dir][0]
+            y += DIRS[step.dir][1]
+            grid[y][x] = True
+    x = size
+    y = size
+    intersections = []
     for step in path2:
         for i in range(step.dis):
+            x += DIRS[step.dir][0]
+            y += DIRS[step.dir][1]
+            if grid[y][x] == True:
+                intersections.append(str(x-size) + "," + str(y-size))
+    
+    intersections.sort(key=lambda x:manhatthanDistance(x))
 
-            if step.dir == "U":
-                y += 1
-
-            elif step.dir == "D":
-                y -= 1
-
-            elif step.dir == "R":
-                x += 1
-
-            elif step.dir == "L":
-                x -= 1
-            
-            path2_points.append(f"{x},{y}")
-
-            if path2_points[-1] in path1_points:
-                crosspoints.append(path2_points[-1])
-                print(path2_points[-1])
-        
-    crosspoints.sort(key=manhattanDistance)
-
-    return f"The manhattan distance of the closest crosspoint is {manhattanDistance(crosspoints[0])} away"
+    return(f"The closest intersection point is {manhatthanDistance(intersections[0])} away") 
 
 def part2(lines):
     # Code the solution to part 2 here, returning the answer as a string
