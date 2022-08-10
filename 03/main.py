@@ -84,10 +84,65 @@ def part1(lines):
 
 def part2(lines):
     # Code the solution to part 2 here, returning the answer as a string
-    
-    
+    path1, path2 = parseLines(lines)
+    size = findSize(path1, path2)
 
-    pass
+    grid = [[False for i in range(size*2+1)] for j in range(size*2+1)]
+
+    x = size
+    y = size
+    for step in path1:
+        for i in range(step.dis):
+            x += DIRS[step.dir][0]
+            y += DIRS[step.dir][1]
+            grid[y][x] = True
+    x = size
+    y = size
+    intersections = []
+    for step in path2:
+        for i in range(step.dis):
+            x += DIRS[step.dir][0]
+            y += DIRS[step.dir][1]
+            if grid[y][x] == True:
+                intersections.append(str(x-size) + "," + str(y-size))
+    
+    intersections.sort(key=lambda x:manhatthanDistance(x))
+
+    wire1Dist = {}
+    wire2Dist = {}
+
+    x = size
+    y = size
+    stepCounter = 0
+    for step in path1:
+        for i in range(step.dis):
+            x += DIRS[step.dir][0]
+            y += DIRS[step.dir][1]
+            stepCounter += 1
+            
+            coordString = str(x-size) + "," + str(y-size)
+            if coordString in intersections:
+                if coordString not in wire1Dist:
+                    wire1Dist[coordString] = stepCounter
+
+    x = size
+    y = size
+    stepCounter = 0
+    for step in path2:
+        for i in range(step.dis):
+            x += DIRS[step.dir][0]
+            y += DIRS[step.dir][1]
+            stepCounter += 1
+            
+            coordString = str(x-size) + "," + str(y-size)
+            if coordString in intersections:
+                if coordString not in wire2Dist:
+                    wire2Dist[coordString] = stepCounter
+
+    intersections.sort(key=lambda x:wire1Dist[x]+wire2Dist[x])
+    closestIntersection = wire1Dist[intersections[0]] + wire2Dist[intersections[0]]
+
+    return(f"The closest intersection point is {closestIntersection} away") 
 
 def main ():
     # Opens a dialog to select the input file
