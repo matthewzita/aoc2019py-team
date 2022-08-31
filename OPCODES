@@ -1,0 +1,28 @@
+Opcode 1
+Adds two inputs.
+
+Opcode 2
+Multiplies two inputs.
+
+Opcode 3
+Takes a single integer as input and saves it to the position given by its only parameter.
+For example, the instruction 3,50 would take an input value and store it at address 50.
+
+Opcode 4
+Outputs the value of its only parameter.
+For example, the instruction 4,50 would output the value at address 50.
+
+Opcode 5
+Jump-if-true: if the first parameter is non-zero, it sets the instruction pointer to the value from the second parameter. Otherwise, it does nothing.
+
+Opcode 6
+Jump-if-false: if the first parameter is zero, it sets the instruction pointer to the value from the second parameter. Otherwise, it does nothing.
+
+Opcode 7
+Less than: if the first parameter is less than the second parameter, it stores 1 in the position given by the third parameter. Otherwise, it stores 0.
+
+Opcode 8
+Equals: if the first parameter is equal to the second parameter, it stores 1 in the position given by the third parameter. Otherwise, it stores 0.
+
+Opcode 99
+Halts program.
