@@ -75,9 +75,9 @@ def part2(lines):
         msg = ""
         for pixel in row:
             if pixel == 1:
-                msg = msg + "▮"
+                msg = msg + "▮▮"
             else:
-                msg = msg + " "
+                msg = msg + "  "
         print(msg)
 
     return(f"Read the text above")
