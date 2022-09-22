@@ -65,6 +65,7 @@ class Scanner(Point):
 
     def scan(self, asteroids):
 
+        self.scanned = []
         for asteroid in asteroids:
 
             if self == asteroid:
@@ -92,18 +93,20 @@ class Scanner(Point):
 
     def laser(self, asteroids, stop_count):
 
-        for scanned in self.scanned:
+        last_destroyed = None
+        for i in range(len(self.scanned)):
             self.destroy_count += 1
 
-            if self.destroy_count == stop_count-1:
-                return [scanned]
+            if self.destroy_count == stop_count:
+                self.scanned = self.scanned[:i+1]
+                last_destroyed = self.scanned[-1]
 
         aftermath = []
         for asteroid in asteroids:
             if asteroid not in self.scanned:
                 aftermath.append(asteroid)
 
-        return aftermath
+        return aftermath, last_destroyed
 
     class ScannedAsteroid(Point):
 
@@ -148,6 +151,23 @@ def printAsteroids(asteroids):
     for asteroid in asteroids:
         print(asteroid, end=" ")
     print("\n")
+
+def printMap(asteroids, scanner, width, height):
+
+    print()
+    for y in range(height):
+        for x in range(width):
+            point = Point(x, y)
+            if point in asteroids:
+                if point == scanner:
+                    print("@", end="")
+                else:
+                    print("#", end="")
+            else:
+                print(".", end="")
+
+            
+        print()
 
 def part1(lines):
     # Code the solution to part 1 here, returning the answer as a string
@@ -201,13 +221,19 @@ def part2(lines):
             canSee = count
             scanner = Scanner(asteroids[i].x, asteroids[i].y)
 
-    Nth_ASTEROID = len(asteroids)-1
+    WIDTH = len(lines[0])
+    HEIGHT = len(lines)
 
-    while len(asteroids) > 1:
+    printMap(asteroids, scanner, WIDTH, HEIGHT)
+
+    last_destroyed = None
+    Nth_ASTEROID = len(asteroids)-1
+    while last_destroyed is None:
         scanner.scan(asteroids)
-        asteroids = scanner.laser(asteroids, Nth_ASTEROID)
+        asteroids, last_destroyed = scanner.laser(asteroids, Nth_ASTEROID)
+        printMap(asteroids, scanner, WIDTH, HEIGHT)
     
-    return f"The {Nth_ASTEROID}th asteroid that will be destroyed is {asteroids[0]}"
+    return f"The {Nth_ASTEROID}th asteroid that will be destroyed is {last_destroyed}"
 
 
 def main():
