@@ -54,6 +54,7 @@ class Scanner(Point):
     def __init__(self, x, y):
         super().__init__(x, y)
         self.scanned = []
+        self.scan_count = 0
         self.destroy_count = 0
 
     def printScanned(self, upper_bound):
@@ -90,6 +91,7 @@ class Scanner(Point):
                 self.scanned.append(just_scanned)
 
         self.scanned.sort()
+        self.scanned_count = len(self.scanned)
 
     def laser(self, asteroids, stop_count):
 
@@ -174,60 +176,35 @@ def part1(lines):
 
     asteroids = parseLines(lines)
 
-    canSee = 0
-    for i in range(len(asteroids)):
-        
-        slope_dirs = []
-        count = 0
-        for j in range(len(asteroids)):
+    max_count = 0
+    for scanner in [Scanner(asteroid.x, asteroid.y) for asteroid in asteroids]:
+        scanner.scan(asteroids)
+        max_count = max(max_count, scanner.scanned_count)
 
-            if i == j:
-                continue
-
-            slope = asteroids[i].slopeTo(asteroids[j])
-            angle = asteroids[i].angleTo(asteroids[j])
-
-            if [slope, angle] not in slope_dirs:
-                count += 1
-                slope_dirs.append([slope, angle])
-
-        canSee = max(canSee, count)
-
-    return(f"The number of asteroids the scanner can see is {canSee}") 
+    return(f"The number of asteroids the scanner can see is {max_count}") 
 
 def part2(lines):
     # Code the solution to part 2 here, returning the answer as a string
     
     asteroids = parseLines(lines)
 
-    canSee = 0
-    for i in range(len(asteroids)):
-        
-        slope_dirs = []
-        count = 0
-        for j in range(len(asteroids)):
+    scanner = None
+    max_count = 0
+    for potential_scanner in [Scanner(asteroid.x, asteroid.y) for asteroid in asteroids]:
+        potential_scanner.scan(asteroids)
 
-            if i == j:
-                continue
-
-            slope = asteroids[i].slopeTo(asteroids[j])
-            angle = asteroids[i].angleTo(asteroids[j])
-
-            if [slope, angle] not in slope_dirs:
-                count += 1
-                slope_dirs.append([slope, angle])
-
-        if count > canSee:
-            canSee = count
-            scanner = Scanner(asteroids[i].x, asteroids[i].y)
-
+        if potential_scanner.scanned_count > max_count:
+            scanner = potential_scanner
+            max_count = scanner.scanned_count
+            
     WIDTH = len(lines[0])
     HEIGHT = len(lines)
 
     printMap(asteroids, scanner, WIDTH, HEIGHT)
 
     last_destroyed = None
-    Nth_ASTEROID = len(asteroids)-1
+    # Nth_ASTEROID = len(asteroids)-1
+    Nth_ASTEROID = 200
     while last_destroyed is None:
         scanner.scan(asteroids)
         asteroids, last_destroyed = scanner.laser(asteroids, Nth_ASTEROID)
